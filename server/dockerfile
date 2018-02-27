@@ -2,7 +2,7 @@ FROM centos
 
 #env
 RUN yum install -y epel-release
-RUN yum install -y python-pip go git wget curl openssl
+RUN yum install -y python-pip go git openssl
 RUN python -m pip install --upgrade pip
 RUN python -m pip install grpcio grpcio-tools
 
