@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.examples.pingpong";
+option java_outer_classname = "pingpongProto";
+option objc_class_prefix = "PPP";
+
+package pingpong;
+
+service CommandHandler {
+	rpc Respond(command) returns(response) {}
+}
+
+message response {
+	string responseText = 1;
+}
+
+message command {
+	string commandText = 1;
+}

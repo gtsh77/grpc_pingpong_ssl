@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  pingpong:
+    build: server
+    command: "python /pingpong_server/pingpong_server.py"
+    volumes:
+      - pubkey:/pubkey
+
+    ports:
+      - "50051:50051"
+  client:
+    build: client
+    command: "python /pingpong_client/pingpong_client.py PING"
+    volumes:
+      - pubkey:/pubkey
+    depends_on:
+      - pingpong
+
+volumes:
+  pubkey:

@@ -1,0 +1,28 @@
+FROM centos
+
+#env
+RUN yum install -y epel-release
+RUN yum install -y python-pip go git wget curl openssl
+RUN python -m pip install --upgrade pip
+RUN python -m pip install grpcio grpcio-tools
+
+#build cert tool
+RUN git clone https://github.com/square/certstrap /tmp/certstrap
+RUN cd /tmp/certstrap && ./build
+
+#gen SSL
+RUN cd /tmp/certstrap/bin && ./certstrap-`git describe`-linux-amd64 init --common-name "pingpong" --passphrase ""
+
+#prep app files
+RUN mkdir -p /pingpong_server/protos
+RUN mkdir /pubkey
+RUN mv /tmp/certstrap/bin/out /pingpong_server/SSL
+RUN cp /pingpong_server/SSL/pingpong.crt /pubkey
+COPY ./pingpong_server.py /pingpong_server
+COPY ./pingpong.proto /pingpong_server/protos
+
+#gen protos
+RUN python -m grpc_tools.protoc -I/pingpong_server/protos --python_out=/pingpong_server --grpc_python_out=/pingpong_server /pingpong_server/protos/pingpong.proto
+
+#start server
+#RUN cd /pingpong_server && python pingpong_server.py
