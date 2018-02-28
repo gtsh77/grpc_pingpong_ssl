@@ -1,0 +1,5 @@
+FROM postgres:9.6
+
+#on first startup init table using "entry point style"
+COPY db_init.sql /docker-entrypoint-initdb.d
+RUN chown postgres /docker-entrypoint-initdb.d/db_init.sql

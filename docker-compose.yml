@@ -1,21 +1,30 @@
 version: '3'
 
 services:
+  db:
+    build: database
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: 123
+
   pingpong:
     build: server
-    command: "python /pingpong_server/pingpong_server.py"
+    command: "./wait-for-it.sh db:5432 -- python pingpong_server.py"
     volumes:
-      - pubkey:/pubkey
+      - pubkey4:/pubkey
+      - db_bay:/db
+    depends_on:
+      - db
 
-    ports:
-      - "50051:50051"
   client:
     build: client
-    command: "python /pingpong_client/pingpong_client.py PING"
+    command: "./wait-for-it.sh pingpong:50051 -- python pingpong_client.py FROMDB"
     volumes:
-      - pubkey:/pubkey
+      - pubkey4:/pubkey
+      - db_bay:/db
     depends_on:
       - pingpong
 
 volumes:
-  pubkey:
+  pubkey4:
+  db_bay:
