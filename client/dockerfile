@@ -2,9 +2,10 @@ FROM centos
 
 #env
 RUN yum install -y epel-release
-RUN yum install -y python-pip which
-RUN python -m pip install --upgrade pip
-RUN python -m pip install grpcio grpcio-tools
+RUN yum install -y python36 python-pip which wget
+RUN wget https://bootstrap.pypa.io/get-pip.py
+RUN python36 get-pip.py
+RUN python36 -m pip install grpcio grpcio-tools
 
 #get public key?
 
@@ -16,7 +17,7 @@ COPY ./pingpong.proto /pingpong_client/protos
 COPY ./wait-for-it.sh /pingpong_client
 
 #gen protos
-RUN python -m grpc_tools.protoc -I/pingpong_client/protos --python_out=/pingpong_client --grpc_python_out=/pingpong_client /pingpong_client/protos/pingpong.proto
+RUN python36 -m grpc_tools.protoc -I/pingpong_client/protos --python_out=/pingpong_client --grpc_python_out=/pingpong_client /pingpong_client/protos/pingpong.proto
 
 #start client
 #RUN cd /pingpong_client && python pingpong_client.py PING

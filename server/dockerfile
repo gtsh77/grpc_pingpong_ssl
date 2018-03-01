@@ -2,9 +2,10 @@ FROM centos
 
 #env
 RUN yum install -y epel-release
-RUN yum install -y python-pip go git openssl which
-RUN python -m pip install --upgrade pip
-RUN python -m pip install grpcio grpcio-tools psycopg2-binary
+RUN yum install -y python36 python-pip go git openssl which wget
+RUN wget https://bootstrap.pypa.io/get-pip.py
+RUN python36 get-pip.py
+RUN python36 -m pip install grpcio grpcio-tools psycopg2-binary
 
 #build cert tool
 RUN git clone https://github.com/square/certstrap /tmp/certstrap
@@ -25,7 +26,7 @@ COPY ./pingpong.proto /pingpong_server/protos
 COPY ./wait-for-it.sh /pingpong_server
 
 #gen protos
-RUN python -m grpc_tools.protoc -I/pingpong_server/protos --python_out=/pingpong_server --grpc_python_out=/pingpong_server /pingpong_server/protos/pingpong.proto
+RUN python36 -m grpc_tools.protoc -I/pingpong_server/protos --python_out=/pingpong_server --grpc_python_out=/pingpong_server /pingpong_server/protos/pingpong.proto
 
 #start server
 #RUN cd /pingpong_server && python pingpong_server.py

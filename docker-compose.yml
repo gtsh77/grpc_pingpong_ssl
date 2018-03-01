@@ -9,22 +9,22 @@ services:
 
   pingpong:
     build: server
-    command: "./wait-for-it.sh db:5432 -- python pingpong_server.py"
+    command: "./wait-for-it.sh db:5432 -- python36 pingpong_server.py"
     volumes:
-      - pubkey4:/pubkey
+      - pubkey7:/pubkey
       - db_bay:/db
     depends_on:
       - db
 
   client:
     build: client
-    command: "./wait-for-it.sh pingpong:50051 -- python pingpong_client.py FROMDB"
+    command: "./wait-for-it.sh pingpong:50051 -- python36 pingpong_client.py FROMDB"
     volumes:
-      - pubkey4:/pubkey
+      - pubkey7:/pubkey
       - db_bay:/db
     depends_on:
       - pingpong
 
 volumes:
-  pubkey4:
+  pubkey7:
   db_bay:
